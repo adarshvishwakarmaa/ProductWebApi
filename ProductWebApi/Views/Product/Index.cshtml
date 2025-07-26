@@ -1,0 +1,441 @@
+﻿@* @model IEnumerable<ProductWebApi.Models.Domains.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a class="btn btn-info" asp-action="Create">Create New</a>
+</p>
+
+<div class="row pt-1" id="HeadText">
+    <div class="col-log-1">
+        <select class="form-select form-control" id="pagesize">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+    <div class="col-log-3">
+        <button class="btn btn-primary btn-sm" onclick="return clearFilters();">Clear All Filters</button>
+    </div>
+    <div class="col-log-4  pager"></div>
+    <div class="col-log-4  pagerNew"></div>
+
+</div>
+<div class="text-nowrap heightWidth520px" id="tableDiv">
+    <table class="table commanTcolor table-striped table-dark pt-2" id="indexTable">
+        <thead>
+            <tr class="headerRow">
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Quantity)
+                </th>
+                
+                <th>
+                    @Html.DisplayNameFor(model => model.Brand)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedAt)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DiscountPercentage)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SupplierName)
+                </th>
+                <th></th>
+            </tr>
+            <tr class="searchRow">
+                <th></th>
+                <th>
+                    <input type="text" id="Name" placeholder="Search" class="form-control" />
+                </th>
+                <th>
+                    <input type="text" id="Description" placeholder="Search" class="form-control" />
+                </th>
+                <th>
+                    <input type="text" id="Price" placeholder="Search" class="form-control" />
+                </th>
+                <th>
+                    <input type="text" id="Brand" placeholder="Search" class="form-control" />
+                </th>
+                <th>
+                    <input type="text" id="Category" placeholder="Search" class="form-control" />
+                </th>
+                <th>
+                    <input type="text" id="CreatedAt" placeholder="Search" class="form-control" />
+                </th>
+                <th>
+                    <input type="text" id="DiscountPercentage" placeholder="Search" class="form-control" />
+                </th>
+              
+                 <th>
+                    <input type="text" id="IsActive" placeholder="Search" class="form-control" />
+                </th>
+                <th>
+                    <input type="text" id="SupplierName" placeholder="Search" class="form-control" />
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="filterTable">
+        </tbody>
+    </table>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        var pageSize = "10";
+        var pageIndex = "";
+        var Name = "";
+        var Description = "";
+        var Price = "";
+        var Quantity = "";
+        var Brand = "";
+        var Category = "";
+        var CreatedAt = "";
+        var DiscountPercentage = "";
+        var IsActive = "";
+        var SupplierName = "";
+      
+
+        $("#tableDiv").on('keyup change', '.searchRow input', function (event) {
+            event.preventDefault();
+            Name = $("#Name").val();
+            Description = $("#Description").val();
+            Price = $("#Price").val();
+            Quantity = $("#Quantity").val();
+            Brand = $("#Brand").val();
+            Category = $("#Category").val();
+            CreatedAt = $("#CreatedAt").val();
+            DiscountPercentage = $("#DiscountPercentage").val();
+            IsActive = $("#IsActive").val();
+            SupplierName = $("#SupplierName").val();
+            GetData(1);
+        });
+        $("#pagesize").change(function () {
+            pageSize = $("#pagesize").val();
+            GetData(1);
+        });
+        $(function () { GetData(1); });
+        function GetData(pageIndex) {
+            var allData = pageIndex + "^" + pageSize + "^" + Name + "^" + Description + "^" + Price + "^"
+                + Quantity + "^" + Brand + "^" + Category + "^" + CreatedAt + "^" + DiscountPercentage+ "^" +IsActive+ "^" + SupplierName;
+            $.ajax({
+                type: "GET",
+                url: "/Product/GetData?allData=" + encodeURIComponent(allData),
+                contentType: 'html',
+                success: function (response) {
+                    var Response = response.split("<b/>");
+                    $("#filterTable").empty();
+                    $("#filterTable").append(Response[0]);
+                    $("#HeadText .pager").empty();
+                    $("#HeadText .pager").append(Response[1]);
+                    $("#HeadText .pagerNew").empty();
+                    $("#HeadText .pagerNew").append(Response[2]);
+                },
+                failure: function (response) {
+                    window.location.href = "/Home/ErrorPage";
+                },
+                error: function (response) {
+                    window.location.href = "/Home/ErrorPage";
+                },
+
+            });
+
+        };
+        function clearFilters() {
+            localStorage.clear();
+            localStorage.reload();
+        }
+
+
+    });
+</script>
+ *@
+
+
+
+
+
+
+
+
+@model IEnumerable<ProductWebApi.Models.Domains.Product>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Product List</h1>
+
+<p>
+    <a class="btn btn-info" asp-action="Create">Create New</a>
+</p>
+
+<div class="row pt-2" id="HeadText">
+    <div class="col-lg-2">
+        <label>Page Size:</label>
+        <select class="form-select" id="pagesize">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+    <div class="col-lg-3">
+        <label>&nbsp;</label>
+        <button class="btn btn-warning w-100" onclick="return clearFilters();">Clear All Filters</button>
+    </div>
+    <div class="col-lg-3 pager"></div>
+    <div class="col-lg-4 pagerNew"></div>
+</div>
+
+<div class="table-responsive mt-3" id="tableDiv">
+    <table class="table table-bordered table-hover table-striped table-info" id="indexTable">
+        <thead>
+            <tr class="headerRow">
+                <th>@Html.DisplayNameFor(model => model.First().ProductId)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Description)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Price)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Quantity)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Brand)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Category)</th>
+                <th>@Html.DisplayNameFor(model => model.First().CreatedAt)</th>
+                <th>@Html.DisplayNameFor(model => model.First().DiscountPercentage)</th>
+                <th>@Html.DisplayNameFor(model => model.First().IsActive)</th>
+                <th>@Html.DisplayNameFor(model => model.First().SupplierName)</th>
+                <th>Actions</th>
+            </tr>
+            <tr class="searchRow">
+                <th></th>
+                <th><input type="text" id="Name" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="Description" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="Price" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="Quantity" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="Brand" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="Category" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="CreatedAt" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="DiscountPercentage" placeholder="Search" class="form-control" /></th>
+                <th><input type="text" id="IsActive" placeholder="true/false" class="form-control" /></th>
+                <th><input type="text" id="SupplierName" placeholder="Search" class="form-control" /></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="filterTable">
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let pageSize = "10";
+            let Name = "", Description = "", Price = "", Quantity = "", Brand = "",
+                Category = "", CreatedAt = "", DiscountPercentage = "", IsActive = "", SupplierName = "";
+
+            // Trigger filter on keyup/change
+            $("#tableDiv").on('keyup change', '.searchRow input', function () {
+                Name = $("#Name").val();
+                Description = $("#Description").val();
+                Price = $("#Price").val();
+                Quantity = $("#Quantity").val();
+                Brand = $("#Brand").val();
+                Category = $("#Category").val();
+                CreatedAt = $("#CreatedAt").val();
+                DiscountPercentage = $("#DiscountPercentage").val();
+                IsActive = $("#IsActive").val();
+                SupplierName = $("#SupplierName").val();
+                GetData(1);
+            });
+
+            // Page size change
+            $("#pagesize").change(function () {
+                pageSize = $(this).val();
+                GetData(1);
+            });
+
+            // Initial load
+            GetData(1);
+
+            // Main GetData function
+            function GetData(pageIndex) {
+                var allData = pageIndex + "^" + pageSize + "^" + Name + "^" + Description + "^" + Price + "^"
+                    + Quantity + "^" + Brand + "^" + Category + "^" + CreatedAt + "^" + DiscountPercentage + "^"
+                    + IsActive + "^" + SupplierName;
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Product/GetData?allData=" + encodeURIComponent(allData),
+                    contentType: 'html',
+                    success: function (response) {
+                        var parts = response.split("<b/>");
+                        $("#filterTable").html(parts[0]);
+                        $(".pager").html(parts[1]);
+                        $(".pagerNew").html(parts[2]);
+                    },
+                    error: function () {
+                        window.location.href = "/Home/ErrorPage";
+                    }
+                });
+            }
+
+            // Clear filters
+            window.clearFilters = function () {
+                $(".searchRow input").val('');
+                Name = Description = Price = Quantity = Brand = Category = CreatedAt = DiscountPercentage = IsActive = SupplierName = "";
+                GetData(1);
+            };
+        });
+    </script>
+}
+
+
+
+@* 
+@model IEnumerable<ProductWebApi.Models.Domains.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a class="btn btn-info" asp-action="Create">Create New</a>
+</p>
+
+<div class="row pt-1" id="HeadText">
+    <div class="col-lg-2">
+        <select class="form-select" id="pagesize">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+    <div class="col-lg-3">
+        <button class="btn btn-primary btn-sm" onclick="return clearFilters();">Clear All Filters</button>
+    </div>
+    <div class="col-lg-4 pager"></div>
+    <div class="col-lg-3 pagerNew"></div>
+</div>
+
+<div class="table-responsive pt-2" id="tableDiv">
+    <table class="table table-striped table-dark text-nowrap" id="indexTable">
+        <thead>
+            <tr class="headerRow">
+                <th>@Html.DisplayNameFor(model => model.First().ProductId)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Description)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Price)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Quantity)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Brand)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Category)</th>
+                <th>@Html.DisplayNameFor(model => model.First().CreatedAt)</th>
+                <th>@Html.DisplayNameFor(model => model.First().DiscountPercentage)</th>
+                <th>@Html.DisplayNameFor(model => model.First().IsActive)</th>
+                <th>@Html.DisplayNameFor(model => model.First().SupplierName)</th>
+                <th>Actions</th>
+            </tr>
+            <tr class="searchRow">
+                <th></th>
+                <th><input type="text" id="Name" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="Description" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="Price" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="Quantity" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="Brand" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="Category" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="CreatedAt" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="DiscountPercentage" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="IsActive" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th><input type="text" id="SupplierName" placeholder="Search" class="form-control form-control-sm" /></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="filterTable"></tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var pageSize = "10";
+            var Name = "", Description = "", Price = "", Quantity = "", Brand = "", Category = "", CreatedAt = "", DiscountPercentage = "", IsActive = "", SupplierName = "";
+
+            $("#tableDiv").on('keyup change', '.searchRow input', function (event) {
+                event.preventDefault();
+                Name = $("#Name").val();
+                Description = $("#Description").val();
+                Price = $("#Price").val();
+                Quantity = $("#Quantity").val();
+                Brand = $("#Brand").val();
+                Category = $("#Category").val();
+                CreatedAt = $("#CreatedAt").val();
+                DiscountPercentage = $("#DiscountPercentage").val();
+                IsActive = $("#IsActive").val();
+                SupplierName = $("#SupplierName").val();
+                GetData(1);
+            });
+
+            $("#pagesize").change(function () {
+                pageSize = $("#pagesize").val();
+                GetData(1);
+            });
+
+            $(function () { GetData(1); });
+
+            function GetData(pageIndex) {
+                var allData = pageIndex + "^" + pageSize + "^" + Name + "^" + Description + "^" + Price + "^" + Quantity + "^" + Brand + "^" + Category + "^" + CreatedAt + "^" + DiscountPercentage + "^" + IsActive + "^" + SupplierName;
+                $.ajax({
+                    type: "GET",
+                    url: "/Product/GetData?allData=" + encodeURIComponent(allData),
+                    contentType: 'html',
+                    success: function (response) {
+                        var Response = response.split("<b/>");
+                        $("#filterTable").html(Response[0]);
+                        $(".pager").html(Response[1]);
+                        $(".pagerNew").html(Response[2]);
+                    },
+                    error: function () {
+                        window.location.href = "/Home/ErrorPage";
+                    }
+                });
+            }
+
+            clearFilters = function () {
+                $(".searchRow input").val('');
+                GetData(1);
+            }
+        });
+    </script>
+}
+ *@

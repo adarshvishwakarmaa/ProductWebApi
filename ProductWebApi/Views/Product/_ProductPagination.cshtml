@@ -1,0 +1,106 @@
+﻿@if (ViewBag.getAllData != null)
+{
+    @foreach (var item in ViewBag.getAllData)
+    {
+        <tr>
+            <td data-toggle="tooltip" title="@item.ProductId">
+                <span class="more">@item.ProductId</span>
+            </td>
+
+            <td data-toggle="tooltip" title="@item.Name">
+                <span class="more">
+                    @item.Name
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.Description">
+                <span class="more">
+                    @item.Description
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.Price">
+                <span class="more">
+                    @item.Price
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.Quantity">
+                <span class="more">
+                    @item.Quantity
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.Brand">
+                <span class="more">
+                    @item.Brand
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.Category">
+                <span class="more">
+                    @item.Category
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.CreatedAt">
+                <span class="more">
+                    @item.CreatedAt
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.DiscountPercentage">
+                <span class="more">
+                    @item.DiscountPercentage
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.IsActive">
+                <span class="more">
+                    @item.IsActive
+                </span>
+            </td>
+            <td data-toggle="tooltip" title="@item.SupplierName">
+                <span class="more">
+                    @item.SupplierName
+                </span>
+            </td>
+
+
+            <td class="text-nowrap">
+                @Html.ActionLink("Details", "Details", new { id = item.ProductId }, new { @class = "btn btn-info btn-sm me-2" })
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }, new { @class = "btn btn-primary btn-sm me-2"  })
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductId }, new { @class = "btn btn-danger btn-sm"})
+            </td>
+
+
+
+        </tr>
+    }
+
+
+    <b />
+    @if (ViewBag.TotalPage > 0)
+    {
+
+        <div class="">
+            <ul class="pagination justify-content-end">
+                @for (var pge = ViewBag.StartPage; pge <= ViewBag.EndPage; pge++)
+                {
+                    <li class="page-item @(pge == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link pge" onclick="return GetData(@pge);">@pge</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <b />
+        <span class="">
+            Showing <b>@ViewBag.ShowRecord</b> from <b>@ViewBag.AllRecord</b> Records
+        </span>
+        <span class="ml-2">
+            <b> @ViewBag.CurrentPage</b> of<b> @ViewBag.TotalPage</b> pages
+        </span>
+    }
+}
+<script language="javascript" type="text/javascript">
+    /////////////////////////////////////on load colour coding
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip({
+            placement: 'bottom',
+            html: true,
+        });
+    });
+</script>
+
